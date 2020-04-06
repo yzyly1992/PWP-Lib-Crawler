@@ -1,3 +1,9 @@
-#Test Image Folder
-/TestImages
+# Test Image Folder
+TestImages/
+Thumbnails/
+
+# Image Files
 *.png
+
+# Other Files
+.DS_Store

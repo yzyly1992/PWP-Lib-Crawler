@@ -1,5 +1,4 @@
 import os, datetime, re, time
-import pymongo
 from PIL import Image
 import math
 import json
@@ -7,9 +6,9 @@ import json
 # pngItems = os.listdir()
 plants = []
 idNum = 0
-testDir = '/Volumes/Library/PWP-LIBRARY/CUTOUTS/PLANTS/AUSSIE NZ Collection'
+testDir = '\Volumes\Library\PWP-LIBRARY\CUTOUTS\PLANTS\AUSSIE NZ Collection'
 currentDir = os.getcwd()
-thumbDir = './Thumbnails/'
+thumbDir = '.\Thumbnails\'
 if not os.path.isdir(thumbDir):
     try:
         os.mkdir(thumbDir)
@@ -23,7 +22,7 @@ def convert_size(size_bytes):
    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
    i = int(math.floor(math.log(size_bytes, 1024)))
    p = math.pow(1024, i)
-   s = round(size_bytes / p, 2)
+   s = round(size_bytes \ p, 2)
    return "%s %s" % (s, size_name[i])
 
 # for item in pngItems:

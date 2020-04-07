@@ -1,9 +1,10 @@
 # Test Image Folder
-TestImages/
-Thumbnails/
+**\TestImages\
+**\Thumbnails\
 
 # Image Files
 *.png
+*.jpg
 
 # Other Files
 .DS_Store

@@ -1,0 +1,3 @@
+[Thumbnailer Entry]
+Exec=python /usr/bin/skp-thumbnailer.py %i %o
+MimeType=application/x-wine-extension-skp;

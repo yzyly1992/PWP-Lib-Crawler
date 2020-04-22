@@ -8,3 +8,6 @@
 
 # Other Files
 .DS_Store
+*.skp
+*.pyc
+*.pyc

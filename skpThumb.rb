@@ -1,8 +1,8 @@
 f=UI.select_directory
 if f
-  pngs=File.join(f, 'PNGS')
+  pngs='E:/Documents/GitHub/PWP-Lib-Crawler/Thumbnails-3D'
   dir=Dir.mkdir(pngs) unless File.exist?(pngs)
-  Dir.glob("#{f}/*.skp").each{|skp|
+  Dir.glob("#{f}/**/*.skp").each{|skp|
     s=Sketchup.open_file(skp)
     if s
       p skp

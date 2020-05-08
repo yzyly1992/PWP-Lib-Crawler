@@ -1,6 +1,11 @@
 # Test Image Folder
 **\TestImages\
 **\Thumbnails\
+**\Thumbnails-People\
+**\Thumbnails-Texture\
+**\Thumbnails-3D\
+**\Thumbnails-3D-PNG\
+**\TestSkp\
 
 # Image Files
 *.png

@@ -6,6 +6,8 @@
 **\Thumbnails-3D\
 **\Thumbnails-3D-PNG\
 **\TestSkp\
+**\Thumbnails-Faceme\
+**\Thumbnails-Faceme-PNG\
 
 # Image Files
 *.png
@@ -16,3 +18,4 @@
 *.skp
 *.pyc
 *.pyc
+*.zip

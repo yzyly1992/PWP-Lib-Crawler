@@ -2,15 +2,12 @@ import datetime, re, time, os
 from PIL import Image
 import math
 import json
-from ConfigWin import cutoutPathFaceme
 
 # pngItems = os.listdir()
-people = []
+plants = []
 idNum = 0
-currentDir = os.getcwd()
-thumbDir = ".\\Thumbnails-Faceme\\"
-pngDir = ".\\Thumbnails-Faceme-PNG\\"
 
+thumbDir = ".\\Thumbnails\\"
 if not os.path.isdir(thumbDir):
     try:
         os.mkdir(thumbDir)
@@ -27,14 +24,16 @@ def convert_size(size_bytes):
    s = round(size_bytes / p, 2)
    return "%s %s" % (s, size_name[i])
 
-def createPngDict(root, name):
-    if not re.match(r'.*\.skp', name, flags=re.IGNORECASE):
-        return
-    else:
-        path = os.path.join(root, name)
-        pngName = name.replace("skp", "png")
-        pngPath = os.path.join(pngDir, pngName)
 
+def createPngDict(root, name):
+    if not re.match(r'.*\.png', name):
+        return
+    path = os.path.join(root, name)
+    try:
+        im = Image.open(path)
+    except IOError:
+        print("failed to identify", path)
+    else:
         if re.match(r'.*?tree.*?', name, flags=re.IGNORECASE):
             category = "Tree"
             name = name.replace('Tree', '')
@@ -59,59 +58,68 @@ def createPngDict(root, name):
         else:
             category = "Other"
 
-        # category = path.split("\\")[-2].replace('-', ' ').replace('_', ' ').replace('+', ' ')
+
         global idNum
         idNum = idNum + 1
-        imageSize = [300, 300]
-        fullName = re.split('\.skp', name, flags=re.IGNORECASE)[0].replace('-', ' ').replace('_', ' ').replace('+', ' ')
-        dataType = "Face-me"
+        realId = 2242 + idNum
+        imageSize = im.size
+        fullName = name.split(".png")[0].replace('-', ' ').replace('_', ' ')
+        dataType = "2D Cutout"
         fileSize = convert_size(os.path.getsize(path))
         createTime = time.ctime(os.path.getmtime(path))
-        thumbName150 = fullName + " " + str(idNum) + " 150p.jpg"
-        thumbName300 = fullName + " " + str(idNum) + " 300p.jpg"
+        thumbName150 = fullName + " " + str(realId) + " 150p.jpg"
+        thumbName300 = fullName + " " + str(realId) + " 300p.jpg"
         thumb150path = os.path.join(thumbDir, thumbName150)
         thumb300path = os.path.join(thumbDir, thumbName300)
+        thumbName150Png = fullName + " " + str(realId) + " 150p.png"
+        thumbName300Png = fullName + " " + str(realId) + " 300p.png"
+        thumb150pathPng = os.path.join(thumbDir, thumbName150Png)
+        thumb300pathPng = os.path.join(thumbDir, thumbName300Png)
 
-        mac = path.replace("\\", "/").replace("Y:", "/Volumes/Library")
-
-        im = Image.open(pngPath)
-
-        if  im.mode == "RGBA":
+        if im.mode == "RGBA":
             bg = Image.new("RGB", im.size, (255, 255, 255))
             bg.paste(im, mask=im)
-            bg.thumbnail((300,300), Image.ANTIALIAS)
+            bg.thumbnail((300,300))
             bg.save(thumb300path)
-            bg.thumbnail((150,150), Image.ANTIALIAS)
+            bg.thumbnail((150,150))
             bg.save(thumb150path)
-
+            return plants.append({
+                "id": realId,
+                "name": fullName,
+                "category": category,
+                "path": path, 
+                "dataType": dataType, 
+                "fileSize": fileSize,
+                "createTime": createTime,
+                "imageSize": imageSize,
+                "thumb150path": thumb150path[1:],
+                "thumb300path": thumb300path[1:]})
         else:
             im.thumbnail((300,300), Image.ANTIALIAS)
-            im.save(thumb300path)
+            im.save(thumb300pathPng, "PNG")
             im.thumbnail((150,150),  Image.ANTIALIAS)
-            im.save(thumb150path)
+            im.save(thumb150pathPng, "PNG")
+            return plants.append({
+                "id": realId,
+                "name": fullName,
+                "category": category,
+                "path": path, 
+                "dataType": dataType, 
+                "fileSize": fileSize,
+                "createTime": createTime,
+                "imageSize": imageSize,
+                "thumb150path": thumb150pathPng[1:],
+                "thumb300path": thumb300pathPng[1:]})
 
-        return people.append({
-            "id": idNum,
-            "name": fullName,
-            "category": category,
-            "path": path, 
-            "dataType": dataType, 
-            "fileSize": fileSize,
-            "createTime": createTime,
-            "imageSize": imageSize,
-            "thumb150path": thumb150path[1:],
-            "thumb300path": thumb300path[1:],
-            "mac": mac})
+addPath = "Y:\\PWP-LIBRARY\\CUTOUTS\\PLANTS\\TROPICAL Collection\\"
+for file in os.listdir(addPath):
+    createPngDict(addPath, file)
 
+# print("Trees: " + ', '.join(trees) + "\n")
+# print("Shrubs: " + ', '.join(shrubs) + "\n")
 
-for rootPath in cutoutPathFaceme:
-    for root, dirs, files in os.walk(rootPath, topdown=True):
-        for name in files:
-            createPngDict(root, name)
-            # try:
-            #     createPngDict(root, name)
-            # except Exception as e:
-            #     print(e)
+with open('plants.json', 'a') as f:
+    json.dump(plants, f)
+    
 
-with open('faceme.json', 'w') as f:
-    json.dump(people, f)
+# print(trees)
